@@ -3,11 +3,11 @@
 MODE="$1"
 case "$MODE" in
     -o|--owner)
-        psql "dbname={{ autotrack_db_name }} host={{ autotrack_db_host }} user={{ autotrack_api_owner_role }} password={{ autotrack_api_owner_password }} port={{ autotrack_db_port }}"
+        psql "dbname={{ autotrack_db_name }} host={{ autotrack_db_host }} user={{ autotrack_db_owner_role }} password={{ autotrack_db_owner_password }} port={{ autotrack_db_port }}"
     ;;
 
     -r|--runtime)
-        psql "dbname={{ autotrack_db_name }} host={{ autotrack_db_host }} user={{ autotrack_api_runtime_role }} password={{ autotrack_api_runtime_password }} port={{ autotrack_db_port }}"
+        psql "dbname={{ autotrack_db_name }} host={{ autotrack_db_host }} user={{ autotrack_api_db_runtime_role }} password={{ autotrack_api_db_runtime_password }} port={{ autotrack_db_port }}"
     ;;
 
     *)

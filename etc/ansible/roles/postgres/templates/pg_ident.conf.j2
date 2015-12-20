@@ -40,7 +40,5 @@
 # ----------------------------------
 
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
-deploy          {{ deploy_user }}       {{ db_assoc_owner_role }}
-deploy          {{ deploy_user }}       {{ db_cms_owner_role }}
-deploy          {{ deploy_user }}       {{ db_assoc_app_role }}
-deploy          {{ deploy_user }}       {{ db_cms_app_role }}
+deploy          {{ deploy_user }}       {{ autotrack_db_owner_role }}
+deploy          {{ deploy_user }}       {{ autotrack_api_db_runtime_role }}

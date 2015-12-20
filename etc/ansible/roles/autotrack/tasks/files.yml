@@ -24,3 +24,9 @@
 - name: install bin/restart
   template: src=../templates/bin-restart.j2 dest={{ autotrack_path }}/bin/restart mode=0755
   when: purpose == "development"
+
+- name: install rambler config files
+  template: src=../templates/rambler.json.j2 dest={{ autotrack_path }}/api/etc/rambler/{{ item.name }}_{{ item.schema }}.json
+  with_items:
+    - { path: "{{ autotrack_path }}/api", name: "{{ autotrack_db_name }}", schema: "{{ autotrack_api_db_schema_name }}" }
+    - { path: "{{ autotrack_path }}/api", name: "{{ autotrack_test_db_name }}", schema: "{{ autotrack_api_db_schema_name }}" }

@@ -1,6 +1,9 @@
 - name: update the cache for apt-get
   apt: update_cache=yes
 
+- name: install git
+  apt: name=git state=latest
+
 - name: create the dev group
   group: name={{ dev_group }} state=present
 

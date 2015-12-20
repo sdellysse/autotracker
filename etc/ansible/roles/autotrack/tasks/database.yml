@@ -26,3 +26,9 @@
   command: "psql {{ autotrack_db_name }} -c \"CREATE SCHEMA {{ autotrack_api_db_schema_name }} AUTHORIZATION {{ autotrack_db_owner_role }}\""
   sudo_user: postgres
   when: postgres_api_schema_exists.stdout != "1"
+
+- name: apply migrations
+  command: "{{ rambler_script_location }}/migrate {{ item }} up"
+  sudo: no
+  with_items:
+    - api

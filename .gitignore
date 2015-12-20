@@ -1,4 +1,11 @@
 .DS_Store
 .*.sw?
 
+/.env
+/.vagrant
+/bin/log
+/bin/psql
+/bin/restart
+/bin/ssh
 /node_modules
+/npm-debug.log

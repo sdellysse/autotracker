@@ -1,7 +1,6 @@
 deploy_user: ubuntu
 dev_group: node-dev
 log_path: "/var/log"
-node_environment: production
 project_basepath: "/opt"
 purpose: deploy
 
