@@ -1,0 +1,11 @@
+- name: update the cache for apt-get
+  apt: update_cache=yes
+
+- name: create the dev group
+  group: name={{ dev_group }} state=present
+
+- name: add the deploy user to the dev group
+  user: name={{ deploy_user }} groups={{ dev_group }} append=yes
+
+- name: add the migrate command
+  template: src=../templates/migrate.sh.j2 dest={{ rambler_script_location }}/migrate mode=0775

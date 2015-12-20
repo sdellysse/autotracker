@@ -1,0 +1,28 @@
+- name: create the database
+  postgresql_db: name={{ autotrack_db_name }} owner=postgres
+  sudo_user: postgres
+  register: postgres_create_db
+
+- name: set up the autotrack owner role
+  postgresql_user: name={{ autotrack_db_owner_role }} password={{ autotrack_db_owner_password }} role_attr_flags=CREATEDB,SUPERUSER
+  sudo_user: postgres
+  register: postgres_assoc_owner_role
+
+- name: set up the autotrack runtime roles
+  postgresql_user: name={{ item.role }} password={{ item.password }}
+  sudo_user: postgres
+  register: postgres_assoc_app_role
+  with_items:
+    - { role: "{{ autotrack_api_db_runtime_role }}", password: "{{ autotrack_api_db_runtime_password }}" }
+
+#Two steps
+- name: check whether the api schema exists
+  command: "psql {{ autotrack_db_name }} -tAc \"select 1 from information_schema.schemata where catalog_name='{{ autotrack_db_name }}' and schema_name='{{ autotrack_api_db_schema_name }}'\""
+  sudo_user: postgres
+  register: postgres_api_schema_exists
+  changed_when: false
+
+- name: create the api schema
+  command: "psql {{ autotrack_db_name }} -c \"CREATE SCHEMA {{ autotrack_api_db_schema_name }} AUTHORIZATION {{ autotrack_db_owner_role }}\""
+  sudo_user: postgres
+  when: postgres_api_schema_exists.stdout != "1"

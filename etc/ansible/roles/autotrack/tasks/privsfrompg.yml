@@ -1,0 +1,79 @@
+---
+# Tasks to set permissions for the app roles
+
+- name: grant usage to the app users on the extensions schema
+  postgresql_privs: db={{ db_name }} roles={{ item.role }} privs=USAGE type=schema objs={{ item.schema }}
+  sudo_user: postgres
+  with_items:
+    - { role: "{{ db_assoc_owner_role }}",  schema: "{{ db_extension_hstore_schema }}"      }
+    - { role: "{{ db_assoc_app_role }}",    schema: "{{ db_extension_hstore_schema }}"      }
+    - { role: "{{ db_cms_owner_role }}",    schema: "{{ db_extension_hstore_schema }}"      }
+    - { role: "{{ db_cms_app_role }}",      schema: "{{ db_extension_hstore_schema }}"      }
+    - { role: "{{ db_assoc_owner_role }}",  schema: "{{ db_extension_pgcrypto_schema }}"    }
+    - { role: "{{ db_assoc_app_role }}",    schema: "{{ db_extension_pgcrypto_schema }}"    }
+    - { role: "{{ db_cms_owner_role }}",    schema: "{{ db_extension_pgcrypto_schema }}"    }
+    - { role: "{{ db_cms_app_role }}",      schema: "{{ db_extension_pgcrypto_schema }}"    }
+  notify:
+    - restart postgres
+
+- name: grant usage to the app users on their respective schemas
+  postgresql_privs: db={{ db_name }} roles={{ item.role }} privs=USAGE type=schema objs={{ item.schema }}
+  sudo_user: postgres
+  with_items:
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_schema }}" }
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_test_schema }}" }
+    - { role: "{{ db_cms_app_role }}", schema: "{{ db_cms_schema }}" }
+  notify:
+    - restart postgres
+
+- name: set table permissions for the app users on their respective schemas
+  postgresql_privs: db={{ db_name }} roles={{ item.role }} privs=SELECT,INSERT,UPDATE,DELETE type=table schema={{ item.schema }} objs=ALL_IN_SCHEMA
+  sudo_user: postgres
+  with_items:
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_schema }}" }
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_test_schema }}" }
+    - { role: "{{ db_cms_app_role }}", schema: "{{ db_cms_schema }}" }
+  notify:
+    - restart postgres
+
+- name: set default table permissions for the app users on their respective schemas
+  command: "psql -U {{ item.owner }} {{ db_name }} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE {{ item.owner }} IN SCHEMA {{ item.schema }} GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO {{ item.role }}\""
+  sudo: no
+  with_items:
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_schema }}", role: "{{ db_assoc_app_role }}" }
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_test_schema }}", role: "{{ db_assoc_app_role }}" }
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_runtime_schema }}", role: "{{ db_assoc_app_role }}" }
+    - { owner: "{{ db_cms_owner_role }}", schema: "{{ db_cms_schema }}", role: "{{ db_cms_app_role }}" }
+  notify:
+    - restart postgres
+
+- name: set default schema permissions for the app users on their respective runtime schemas
+  command: "psql -U {{ item.owner }} {{ db_name }} -c \"GRANT CREATE,USAGE ON SCHEMA {{ db_assoc_runtime_schema }} TO {{ item.role }}\""
+  sudo: no
+  with_items:
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_runtime_schema }}", role: "{{ db_assoc_app_role }}" }
+  notify:
+    - restart postgres
+
+- name: set sequence permissions for the app users on their respective schemas
+  postgresql_privs: db={{ db_name }} roles={{ item.role }} privs=USAGE,SELECT type=sequence schema={{ item.schema }} objs=ALL_IN_SCHEMA
+  sudo_user: postgres
+  with_items:
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_schema }}" }
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_test_schema }}" }
+    - { role: "{{ db_assoc_app_role }}", schema: "{{ db_assoc_runtime_schema }}" }
+    - { role: "{{ db_cms_app_role }}", schema: "{{ db_cms_schema }}" }
+  notify:
+    - restart postgres
+
+- name: set default sequence permissions for the app users on their respective schemas
+  command: "psql -U {{ item.owner }} {{ db_name }} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE {{ item.owner }} IN SCHEMA {{ item.schema }} GRANT USAGE,SELECT ON SEQUENCES TO {{ item.role }}\""
+  sudo: no
+  with_items:
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_schema }}", role: "{{ db_assoc_app_role }}" }
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_test_schema }}", role: "{{ db_assoc_app_role }}" }
+    - { owner: "{{ db_assoc_owner_role }}", schema: "{{ db_assoc_runtime_schema }}", role: "{{ db_assoc_app_role }}" }
+    - { owner: "{{ db_cms_owner_role }}", schema: "{{ db_cms_schema }}", role: "{{ db_cms_app_role }}" }
+  notify:
+    - restart postgres
+

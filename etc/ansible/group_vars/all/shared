@@ -1,0 +1,8 @@
+deploy_user: ubuntu
+dev_group: node-dev
+log_path: "/var/log"
+node_environment: production
+project_basepath: "/opt"
+purpose: deploy
+
+# vim: syntax=yaml ts=2 sw=2 sts=2 sr noet

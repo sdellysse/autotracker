@@ -1,0 +1,26 @@
+- name: set permissions on the log files
+  file: path={{ item }} owner={{ deploy_user }} group={{ dev_group }} state=touch
+  with_items:
+    - "{{ autotrack_api_log_pathname }}"
+
+- name: install packages according to package.json
+  npm: path={{ autotrack_path }}
+
+- name: write out the dot env file
+  template: src=../templates/env.j2 dest={{ autotrack_path }}/.env
+
+- name: install bin/log
+  template: src=../templates/bin-log.j2 dest={{ autotrack_path }}/bin/log mode=0755
+  when: purpose == "development"
+
+- name: install bin/psql
+  template: src=../templates/bin-psql.j2 dest={{ autotrack_path }}/bin/psql mode=0755
+  when: purpose == "development"
+
+- name: install bin/ssh
+  template: src=../templates/bin-ssh.j2 dest={{ autotrack_path }}/bin/ssh mode=0755
+  when: purpose == "development" and is_vagrant == "yes"
+
+- name: install bin/restart
+  template: src=../templates/bin-restart.j2 dest={{ autotrack_path }}/bin/restart mode=0755
+  when: purpose == "development"

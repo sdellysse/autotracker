@@ -1,0 +1,9 @@
+NODE_ENV={{ node_environment }}
+DB_SCHEMA={{ autotrack_api_db_schema_name }}
+DB_VARIABLE_SCHEMA={{ autotrack_api_db_variable_schema_name }}
+
+DB_CONN_STRING="postgres://{{ autotrack_api_db_runtime_role }}:{{ autotrack_api_db_runtime_password }}@{{ autotrack_db_host }}/{{ autotrack_db_name }}"
+LOG_PATHNAME="{{ autotrack_api_log_pathname }}"
+
+TEST_DB_CONN_STRING="postgres://{{ autotrack_api_runtime_role }}:{{ autotrack_api_runtime_password }}@{{ autotrack_test_db_host }}/{{ autotrack_test_db_name }}"
+TEST_LOG_PATHNAME="{{ autotrack_api_test_log_pathname }}"

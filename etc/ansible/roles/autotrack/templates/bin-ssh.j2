@@ -1,0 +1,4 @@
+#!/bin/bash
+
+run_string=$( echo "cd {{ autotrack_path }} && $@" )
+vagrant ssh -c "$run_string"

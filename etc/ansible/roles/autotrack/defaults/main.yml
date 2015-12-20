@@ -1,0 +1,16 @@
+autotrack_api_db_runtime_password: oiewnslkfjewnd038459wjne03jn2mn2k4mn5i
+autotrack_api_db_runtime_role: autotrack_api_runtime
+autotrack_api_db_schema_name: api
+autotrack_api_db_variable_schema_name: "{{ autotrack_api_schema_name }}_var"
+autotrack_api_log_pathname: "{{ log_path }}/{{ autotrack_api_service_name }}.log"
+autotrack_api_service_name: autotrack-api
+autotrack_api_test_log_pathname: "{{ log_path }}/{{ autotrack_api_service_name }}_test.log"
+autotrack_db_host: "{{ postgres_host }}"
+autotrack_db_name: autotrack
+autotrack_db_owner_password: ienvotrn493jnckwi38rjncoe
+autotrack_db_owner_role: autotrack_owner
+autotrack_db_port: "{{ postgres_port }}"
+autotrack_path: "{{ project_basepath }}/autotrack"
+autotrack_test_db_host: "{{ autotrack_db_host }}"
+autotrack_test_db_name: "{{ autotrack_db_name }}_test"
+autotrack_test_db_port: "{{ autotrack_db_port }}"

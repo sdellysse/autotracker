@@ -1,0 +1,3 @@
+- include: files.yml
+- include: database.yml
+- include: services.yml

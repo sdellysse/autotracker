@@ -1,0 +1,3 @@
+memcached_log_pathname: "{{ log_path }}/memcached.log"
+memcached_memory_megabytes: 64
+memcached_port: 11211

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SERVICE="$1"
+
+case "$SERVICE" in
+    -a|--api)
+        sudo service {{ autotrack_api_service_name }} restart
+    ;;
+
+    *)
+        sudo service {{ autotrack_api_service_name }} restart
+    ;;
+esac

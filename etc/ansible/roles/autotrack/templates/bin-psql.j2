@@ -1,0 +1,16 @@
+#!/bin/bash
+
+MODE="$1"
+case "$MODE" in
+    -o|--owner)
+        psql "dbname={{ autotrack_db_name }} host={{ autotrack_db_host }} user={{ autotrack_api_owner_role }} password={{ autotrack_api_owner_password }} port={{ autotrack_db_port }}"
+    ;;
+
+    -r|--runtime)
+        psql "dbname={{ autotrack_db_name }} host={{ autotrack_db_host }} user={{ autotrack_api_runtime_role }} password={{ autotrack_api_runtime_password }} port={{ autotrack_db_port }}"
+    ;;
+
+    *)
+        "$0" --runtime
+    ;;
+esac

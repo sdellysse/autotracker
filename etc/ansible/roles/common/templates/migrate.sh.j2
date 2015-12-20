@@ -1,0 +1,68 @@
+#!/bin/bash
+
+COMPONENT="$1"; shift
+
+case "$COMPONENT" in
+    api)
+        PROJECT_ROOT="{{ autotrack_path }}/api"
+    ;;
+
+    *)
+        echo "\$1 must be api"
+        exit 1
+    ;;
+esac
+
+MIGRATIONS_DIR="${PROJECT_ROOT}/database/migrations"
+CONFIG_FILES="$(find "$PROJECT_ROOT/etc/rambler" -name '*.json')"
+
+COMMAND="$1"; shift
+case "$COMMAND" in
+    new)
+        MIGRATION_NAME="$1"; shift
+
+        if [[ -z $MIGRATION_NAME ]]; then
+            echo "Please enter a name for this migration"
+            exit 2
+        elif [[ $MIGRATION_NAME =~ [^a-z_0-9] ]]; then
+            echo "Migration names must contain only numbers, lowercase letters, or underscores"
+            exit 3
+        fi
+
+        DATESTAMP=$(date -u +%Y%m%d%H%M%S)
+        PATHNAME="$MIGRATIONS_DIR/${DATESTAMP}_${MIGRATION_NAME}.sql"
+
+        cp "{{ rambler_script_location }}/migration_skeleton.sql" "$PATHNAME"
+        echo "Added $PATHNAME"
+    ;;
+
+    up)
+        echo "$CONFIG_FILES" | while read CONFIG_FILE ; do
+            echo -n "Upgrading database using ${CONFIG_FILE}... "
+            {{ rambler_go_path }}/bin/rambler -c "$CONFIG_FILE" apply --all
+            echo "done."
+        done
+    ;;
+
+    down)
+        echo "$CONFIG_FILES" | while read CONFIG_FILE ; do
+            echo -n "Reverting last migration using $CONFIG_FILE... "
+            {{ rambler_go_path }}/bin/rambler -c "$CONFIG_FILE" reverse
+            echo "done."
+        done
+    ;;
+
+    reset)
+        echo "$CONFIG_FILES" | while read CONFIG_FILE ; do
+            echo -n "Reverting all migrations using $CONFIG_FILE... "
+            {{ rambler_go_path }}/bin/rambler -c "$CONFIG_FILE" reverse --all
+            echo "done."
+        done
+    ;;
+
+    *)
+        echo "USAGE: $0 api new|up|down|reset"
+        exit 4
+    ;;
+esac
+

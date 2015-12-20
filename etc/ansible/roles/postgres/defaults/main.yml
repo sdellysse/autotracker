@@ -1,0 +1,6 @@
+---
+# Defaults for postgres
+
+postgres_version: 9.4
+postgres_conf_path: /etc/postgresql/{{ postgres_version }}/main
+

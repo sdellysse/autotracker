@@ -1,0 +1,61 @@
+- name: install software-properties-common
+  apt: name=software-properties-common state=latest
+
+- name: add the golang ppa
+  apt_repository: repo="ppa:evarlast/golang1.4"
+
+- name: update the cache again
+  apt: update_cache=yes
+
+- name: install go
+  apt: name=golang state=latest
+
+- name: set up the profile
+  template: src=../templates/profile.sh.j2 dest=/etc/profile.d/rambler.sh
+
+- name: check out the rambler repo
+  git: repo={{ rambler_repo }} dest={{ rambler_go_path }}/src/{{ rambler_package_name }}
+  sudo: no
+
+- name: fetch dependencies
+  environment:
+    GOPATH: "{{ rambler_go_path }}"
+  command: "go get chdir={{ rambler_go_path }}/src/{{ rambler_package_name }}"
+  sudo: no
+
+- name: install rambler
+  environment:
+    GOPATH: "{{ rambler_go_path }}"
+  command: "go install {{ rambler_package_name }} chdir={{ rambler_go_path }}/src/{{ rambler_package_name }}"
+  sudo: no
+
+- name: ensure 'aapi/etc/rambler' directory exists
+  file: path="{{ aapi_basedir}}/etc/rambler" owner={{ deploy_user }} group={{ dev_group }} mode=0755 state=directory
+
+- name: set the config files for the aapi
+  template: src=../templates/aapi.json.j2 dest={{ aapi_basedir }}/etc/rambler/{{ item }}.json
+  sudo: no
+  with_items: "{{ db_assoc_migratable_schemas }}"
+
+- name: ensure 'ccms/etc/rambler' directory exists
+  file: path="{{ ccms_basedir}}/etc/rambler" owner={{ deploy_user }} group={{ dev_group }} mode=0755 state=directory
+
+- name: set the config files for the ccms
+  template: src=../templates/ccms.json.j2 dest={{ ccms_basedir }}/etc/rambler/{{ item }}.json
+  sudo: no
+  with_items: "{{ db_cms_migratable_schemas }}"
+
+- name: add the migration skeleton
+  template: src=../templates/migration_skeleton.sql.j2 dest={{ rambler_script_location }}/migration_skeleton.sql mode=0664
+
+- name: apply associations migrations
+  command: "{{ rambler_script_location }}/migrate up"
+  args:
+    chdir: "{{ aapi_basedir }}"
+  sudo: no
+
+- name: apply cms migrations
+  command: "{{ rambler_script_location }}/migrate up"
+  args:
+    chdir: "{{ ccms_basedir }}"
+  sudo: no

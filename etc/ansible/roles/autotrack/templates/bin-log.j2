@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SERVICE="$1"
+
+case "$SERVICE" in
+    -a|--api)
+        tail -f {{ autotrack_api_log_pathname }}
+    ;;
+
+    *)
+        tail -f {{ autotrack_api_log_pathname }}
+    ;;
+esac

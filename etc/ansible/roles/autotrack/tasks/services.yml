@@ -1,0 +1,7 @@
+- name: configure the api service with upstart
+  template: src=../templates/api_service.conf.j2 dest=/etc/init/{{ autotrack_api_service_name }}.conf
+  notify:
+    - restart api
+
+- name: enable the api service and enable at boot
+  service: name={{ autotrack_api_service_name }} enabled=yes state=started

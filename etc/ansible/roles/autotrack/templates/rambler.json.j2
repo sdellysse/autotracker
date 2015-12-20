@@ -1,0 +1,11 @@
+{
+    "driver": "postgresql",
+    "protocol": "tcp",
+    "host": "{{ autotrack_db_host }}",
+    "port": {{ autotrack_db_port }},
+    "user": "{{ autotrack_db_owner_role }}",
+    "password": "{{ autotrack_db_owner_password }}",
+    "database": "{{ item.name }}",
+    "schema": "{{ item.schema }}",
+    "directory": "{{ item.path }}/database/migrations"
+}
