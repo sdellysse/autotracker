@@ -1,10 +1,10 @@
 #!/bin/bash
 
 COMPONENT="$1"; shift
-
 case "$COMPONENT" in
     api)
-        PROJECT_ROOT="{{ autotrack_path }}/api"
+        MIGRATIONS_DIR="{{ autotrack_path }}/etc/api/database/rambler"
+        CONFIG_FILES="$(find "$ETC_PATH/etc/rambler" -name '*.json')"
     ;;
 
     *)
@@ -13,8 +13,6 @@ case "$COMPONENT" in
     ;;
 esac
 
-MIGRATIONS_DIR="${PROJECT_ROOT}/database/migrations"
-CONFIG_FILES="$(find "$PROJECT_ROOT/etc/rambler" -name '*.json')"
 
 COMMAND="$1"; shift
 case "$COMMAND" in

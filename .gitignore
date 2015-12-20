@@ -3,9 +3,14 @@
 
 /.env
 /.vagrant
+
 /bin/log
 /bin/psql
 /bin/restart
 /bin/ssh
+
+/etc/api/database/rambler/*
+!/etc/api/database/rambler/.keep
+
 /node_modules
 /npm-debug.log
