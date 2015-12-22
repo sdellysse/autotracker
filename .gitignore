@@ -12,4 +12,5 @@
 /etc/api/database/rambler/*
 !/etc/api/database/rambler/.keep
 
+/node_modules/libpq/build
 /npm-debug.log
