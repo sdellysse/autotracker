@@ -1,0 +1,11 @@
+node_modules is included in the repo on purpose. To install a module from npm
+do this:
+
+    npm install --save --ignore-scripts $MODULE
+    git add node_modules package.json
+    git commit -m 'installed $MODULE'
+    bin/ssh npm rebuild
+    git status # if empty for node_modules then end otherwise add the files
+               # listed to gitignore
+    git commit -m 'updated gitignore for $MODULE'
+
