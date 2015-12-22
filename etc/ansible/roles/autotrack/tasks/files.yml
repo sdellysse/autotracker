@@ -3,8 +3,10 @@
   with_items:
     - "{{ autotrack_api_log_pathname }}"
 
-- name: install packages according to package.json
-  npm: path={{ autotrack_path }}
+- name: rebuild npm binary deps
+  command: >
+    npm rebuild
+    chdir={{ autotrack_path }}
 
 - name: write out the dot env file
   template: src=../templates/env.j2 dest={{ autotrack_path }}/.env
